@@ -6,6 +6,7 @@ function Get-BlobContents {
 
     $StorageAccountName = 'nonnastoracc'
     $ContainerName = 'nonnacontainer'
+    $StorageAccountKey
     $context = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey '<access key>'
     $container = Get-AzStorageContainer -Name $ContainerName -Context $context
     $client = $container.CloudBlobContainer.GetBlockBlobReference($blob)
@@ -24,9 +25,7 @@ Function Randomise {
 function Send-Email {
     $gym = Get-BlobContents -blob 'gym.txt'
     $learning = Get-BlobContents -blob 'other learning.txt'
-    $meals = Get-BlobContents -blob 'meal-planner.txt'
-    $secrets = Get-BlobContents -blob 'secrets.txt'
-    $secret = $secrets -split ';'
+    $meals = Get-BlobContents -blob 'meal-planner.txt'=
     $exercises = $gym -split ';'
     $mealPlan = $meals -split ';'
 
