@@ -2,4 +2,4 @@ terraform
 *.tfstate
 *.tfstate.*
 staging.ps1
-secrets.txt
+*.txt
