@@ -6,11 +6,10 @@ function Get-BlobContents {
         [string]$blob
     )
 
-    $sasToken = Get-AzKeyVaultSecret -VaultName 'kv-nonna' -Name 'sastoken' -AsPlainText
+    $sasToken = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'token' -AsPlainText
 
     $StorageAccountName = 'nonnastoracc'
     $ContainerName = 'nonnacontainer'
-    $StorageAccountKey
     $context = New-AzStorageContext -StorageAccountName $StorageAccountName -SasToken $sasToken
     $container = Get-AzStorageContainer -Name $ContainerName -Context $context
     $client = $container.CloudBlobContainer.GetBlockBlobReference($blob)
@@ -33,9 +32,9 @@ function Send-Email {
     $exercises = $gym -split ';'
     $mealPlan = $meals -split ';'
 
-    $username = Get-AzKeyVaultSecret -VaultName 'kv-nonna' -Name 'username' -AsPlainText
-    $emailAddress = Get-AzKeyVaultSecret -VaultName 'kv-nonna' -Name 'email-address' -AsPlainText
-    $password = Get-AzKeyVaultSecret -VaultName 'kv-nonna' -Name 'password' -AsPlainText | ConvertTo-SecureString -AsPlainText -Force
+    $username = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'username' -AsPlainText
+    $emailAddress = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'email-address' -AsPlainText
+    $password = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'password' -AsPlainText | ConvertTo-SecureString -AsPlainText -Force
     
     $mealPlanner = Randomise -category $mealPlan
     $exercises = Randomise -category $gym
