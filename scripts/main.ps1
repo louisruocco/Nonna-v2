@@ -25,6 +25,22 @@ Function Randomise {
     return $category | Sort-Object{Get-Random}
 }
 
+$apiKey = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'youtubeAPIKey' -AsPlainText
+$topic = Get-BlobContents -blob 'other learning.txt'
+$endpoint = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelType=any&q=$topic&key=$apiKey"
+$res = Invoke-RestMethod $endpoint
+$items = $res.items
+$links = foreach($item in $items){
+    $titles = $item.snippet.title
+    $urls = $item.id.videoId
+    $table = @{ $titles = $urls }
+    foreach($thing in $table){
+        $keys = $thing.Keys
+        $values = $thing.Values
+        "$keys | <a href = 'https://www.youtube.com/watch?v=$values'>https://www.youtube.com/watch?v=$values</a>"
+    }
+}
+
 function Send-Email {
     $gym = Get-BlobContents -blob 'gym.txt'
     $learning = Get-BlobContents -blob 'other learning.txt'
@@ -53,8 +69,8 @@ function Send-Email {
         $gymExercises = "<h3>No Gym Today<h3>"
     }
 
-    $learningLinks = foreach ($item in $learning){
-        "<li>$item</li>"
+    $youtubeLinks = foreach ($link in $links){
+        "<li>$link</li>"
     }
 
     $body = @"
@@ -66,7 +82,7 @@ function Send-Email {
     </ul>
     <h2>This Week's Learning Resources:</h2>
         <ul>
-            $learningLinks
+            $youtubeLinks
         </ul>
     <h2>Today's Gym Session</h2>
     <hr>
