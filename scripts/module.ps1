@@ -1,8 +1,12 @@
-[Windows.Security.Credentials.PasswordVault,Windows.Security.Credentials,ContentType=WindowsRuntime]
-$vault = New-Object Windows.Security.Credentials.PasswordVault
-$StoredCredential = $creds.where({$_.Resource -eq "Azure Sub"})
-$subscriptionID = $StoredCredential.Password
+Function Azure-Login {
+    $context = Get-AzContext
+    if(!($context)){
+        Connect-AzAccount
+    }
+}
 
-Connect-AzAccount
+function Update-OtherLearning {
+    Azure-Login
+}
 
-Set-AzContext -Subscription $subscriptionID
+Update-OtherLearning
