@@ -1,5 +1,4 @@
 Connect-AzAccount
-
 function Get-BlobContents {
     param (
         [Parameter(Mandatory)]
@@ -40,33 +39,19 @@ $links = foreach($item in $items){
         "$keys | <a href = 'https://www.youtube.com/watch?v=$values'>https://www.youtube.com/watch?v=$values</a>"
     }
 }
-
 function Send-Email {
-    $gym = Get-BlobContents -blob 'gym.txt'
     $learning = Get-BlobContents -blob 'other learning.txt'
-    $meals = Get-BlobContents -blob 'meal-planner.txt'
-    $exercises = $gym -split ';'
-    $mealPlan = $meals -split ';'
-
+    $randomiser = Get-BlobContents -blob 'questions.txt'
+    
     $username = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'username' -AsPlainText
     $emailAddress = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'email-address' -AsPlainText
     $password = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'password' -AsPlainText | ConvertTo-SecureString -AsPlainText -Force
     
-    $mealPlanner = Randomise -category $mealPlan
-    $exercises = Randomise -category $gym
-
-    $lunch = $mealPlanner[0]
-    $dinner = $mealPlanner[1]
-
-    $day = (Get-Date).DayOfWeek
-
-    if($day -eq "Tuesday" -or $day -eq "Thursday"){
-        $array = $exercises[0..7]
-        $gymExercises = foreach($exercise in $array){
-            "<li>$exercise</li>"
-        }
-    } else {
-        $gymExercises = "<h3>No Gym Today<h3>"
+    $randomise = $randomiser | Sort-Object{Get-Random}
+    $splitLines = $randomise -split "`n"
+    $questions = $splitLines[0..11]
+    $results = foreach($question in $questions){
+        "<li>$question</li>"
     }
 
     $youtubeLinks = foreach ($link in $links){
@@ -76,6 +61,10 @@ function Send-Email {
     $body = @"
     <h1>Nonna</h1>
     <p>Hi Lou, Remember that I am always watching over you. Have a great day!. Love Nonna</p>
+    <h2>DP-300 Questions</h2>
+    <ul>
+        $results
+    </ul>
     <h2>Learning Topic of the Week</h2>
     <ul>
         <li>$learning</li>
@@ -84,15 +73,6 @@ function Send-Email {
         <ul>
             $youtubeLinks
         </ul>
-    <h2>Today's Gym Session</h2>
-    <hr>
-    <ul>
-        $gymexercises
-    </ul>
-    <h2>Today's Meal Plan</h2>
-    <hr>
-    <h3>Lunch: $Lunch</h3>
-    <h3>Dinner: $dinner </h3>
 "@
 
     $email = @{
