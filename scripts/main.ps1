@@ -48,7 +48,7 @@ function Send-Email {
     $password = Get-AzKeyVaultSecret -VaultName 'nonna-kv' -Name 'password' -AsPlainText | ConvertTo-SecureString -AsPlainText -Force
     
     $randomise = $randomiser | Sort-Object{Get-Random}
-    $splitLines = $randomise -split "`n"
+    $splitLines = $randomise -split "`n" | Sort-Object {Get-Random}
     $questions = $splitLines[0..11]
     $results = foreach($question in $questions){
         "<li>$question</li>"
@@ -83,7 +83,7 @@ function Send-Email {
         body = $body
         port = 587
         credential = New-Object System.Management.Automation.PSCredential -ArgumentList $username, $password
-        usessl = $true
+        usessl = $true  
         verbose = $true
     }
 
