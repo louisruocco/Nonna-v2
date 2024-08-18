@@ -3,6 +3,11 @@
 The newer, more improved version of the original Nonna v1 Repo!
 
 ## Changelog:
+### v2.1:
+- **Added DP-300 Randomised questions to email body**
+    - I am currently studying for DP-300 so have re-added the functionality back to randomise 10 questions every day for me to go through mentally to help prepare for the exam
+    - Eventually, functionality will be added to check if the txt file in Azure is empty, if it is, then don't send anything.
+        - This way, I can leave the functionality in instead of having to keep removing and re-adding it
 
 ### v2.0:
 - Have moved everything over into Azure now
