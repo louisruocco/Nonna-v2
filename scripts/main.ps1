@@ -61,6 +61,12 @@ function Send-Email {
     $body = @"
     <h1>Nonna</h1>
     <p>Hi Lou, Remember that I am always watching over you. Have a great day!. Love Nonna</p>
+    <p>Don't forget the 3 things you need to do today:</p>
+    <ol>
+        <li>Eat a piece of fruit</li>
+        <li>Read for half an hour at least</li>
+        <li>Study for DP-300</li>
+    </ol>
     <h2>DP-300 Questions</h2>
     <ul>
         $results
